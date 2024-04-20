@@ -6,11 +6,23 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 public class GWackClientGUI extends JFrame {
 
-    private static String username;
-    private static String Ipaddress;
-    private static String port;
+    private String username;
+    private String Ipaddress;
+    private int port;
+
+    public static JTextArea memberTextArea = new JTextArea(20,13);
+    public static JTextArea messageTextArea = new JTextArea(10, 20);
+    public static JTextArea inputTextArea = new JTextArea(5, 20);
+    public static JButton connectionButton;
+    public boolean isConnected = false;
+    private ClientNetworking client;
+
+
+    
 
     public GWackClientGUI() {
         super();
@@ -31,7 +43,7 @@ public class GWackClientGUI extends JFrame {
         JTextField addressField = new JTextField(13);
         JLabel portLabel = new JLabel("Port");
         JTextField portField = new JTextField(8);
-        JButton connectionButton = new JButton("Connect");
+        connectionButton = new JButton("Connect");
         
 
         serverSpecs.add(name);
@@ -44,7 +56,6 @@ public class GWackClientGUI extends JFrame {
 
         // Adding member components
         JLabel memberJLabel = new JLabel("Members Online");
-        JTextArea memberTextArea = new JTextArea(20,13);
         memberTextArea.setEditable(false);
 
         membersPanel.add(memberJLabel, BorderLayout.NORTH);
@@ -54,13 +65,11 @@ public class GWackClientGUI extends JFrame {
 
         // Adding message components
         JLabel messageLabel = new JLabel("Messages");
-        JTextArea messageTextArea = new JTextArea(10, 20);
         messageTextArea.setEditable(false);
 
         JPanel sendPanel = new JPanel(new BorderLayout());
 
         JLabel composLabel = new JLabel("Compose");
-        JTextArea inputTextArea = new JTextArea(5, 20);
         JButton sendButton = new JButton("Send");
 
 
@@ -74,11 +83,70 @@ public class GWackClientGUI extends JFrame {
         messagesPanel.add(messageLabel, BorderLayout.NORTH);
         messagesPanel.add(messageTextArea, BorderLayout.CENTER);
         messagesPanel.add(sendPanel, BorderLayout.SOUTH);
+        wholePanel.add(serverSpecs, BorderLayout.NORTH);
+        wholePanel.add(membersPanel, BorderLayout.WEST);
+        wholePanel.add(messagesPanel, BorderLayout.CENTER);
+        this.add(wholePanel);
+        this.setSize(800,400);
+        this.setResizable(false);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        // Adding connection functionality
+
+        connectionButton.addActionListener((e) -> {
+            if(!isConnected) {
+                username = nameField.getText();
+                Ipaddress = addressField.getText();
+
+                try {
+                    port = Integer.parseInt(portField.getText());
+                } catch (Exception y) {
+                    // Throw the cannot connect popup
+                    System.out.println("Failed");
+                }
+
+
+                client = new ClientNetworking(username, Ipaddress, port, this);
+
+                isConnected = true;
+
+                connectionButton.setText("Disconnect");
+                nameField.setEditable(false);
+                addressField.setEditable(false);
+                portField.setEditable(false);
+            } else {
+                client.disconnect();
+                isConnected = false;
+                connectionButton.setText("Connect");
+                nameField.setEditable(true);
+                addressField.setEditable(true);
+                portField.setEditable(true);
+            }
 
 
 
-        // Adding functionality 
 
+        });
+
+        sendButton.addActionListener((e) -> {
+            String message = inputTextArea.getText();
+            client.writeMsg(message);
+        });
+    }
+
+    public JTextArea getMembersTextArea(){
+        return memberTextArea;
+    }
+
+    public JTextArea getDisplayTextArea() {
+        return messageTextArea;
+    }
+    public static void main(String[] args) {
+        GWackClientGUI GWCG = new GWackClientGUI();
+        GWCG.setVisible(true);
+    }
+}
+/* Do this in client networking when you have actually connected to the thing
         connectionButton.addActionListener((e) -> {
             if(connectionButton.getText().equals("Connect")){
                 connectionButton.setText("Disconnect");
@@ -96,37 +164,4 @@ public class GWackClientGUI extends JFrame {
                 portField.setEditable(true);
             }
         });
-
-
-
-        
-
-
-        wholePanel.add(serverSpecs, BorderLayout.NORTH);
-        wholePanel.add(membersPanel, BorderLayout.WEST);
-        wholePanel.add(messagesPanel, BorderLayout.CENTER);
-        this.add(wholePanel);
-        this.setSize(800,400);
-        this.setResizable(false);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    }
-    public static void main(String[] args) {
-        GWackClientGUI GWCG = new GWackClientGUI();
-        GWCG.setVisible(true);
-    }
-}
-
-
-        /*
-        JPanel topPanel = new JPanel(new BorderLayout());
-        JPanel bottomPanel = new JPanel(new BorderLayout());
-
-        JLabel messageLabel = new JLabel("Messages");
-        JTextArea messageTextArea = new JTextArea(5, 5);
-        messageTextArea.setEditable(false);
-        topPanel.add(messageLabel, BorderLayout.NORTH);
-        topPanel.add(messageTextArea, BorderLayout.CENTER);
-
-
-        messagesPanel.add(topPanel, BorderLayout.CENTER);
         */
