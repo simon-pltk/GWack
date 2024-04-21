@@ -59,6 +59,9 @@ public class ClientNetworking {
         try {
             pw.println("LOGOUT");
             pw.flush();
+
+            pw.close();
+            br.close();
             sock.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(gwack, "Something went wrong, closing application", "Error", JOptionPane.ERROR_MESSAGE);

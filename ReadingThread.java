@@ -34,7 +34,7 @@ public class ReadingThread extends Thread {
                     members.add(line);
                 } else if(!(line.equals("END_CLIENT_LIST") || line.equals("START_CLIENT_LIST"))) {
                     messages += line + "\n";
-                    gwack.messageTextArea.setText(messages);
+                    gwack.getDisplayTextArea().setText(messages);
                 }
 
                 if(line.equals("START_CLIENT_LIST")){
