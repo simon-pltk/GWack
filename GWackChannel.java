@@ -113,13 +113,14 @@ public class GWackChannel {
     }
 
     public static void main(String[] args) {
-        new GWackClientGUI();
-        int port;
+        int portnum;
+        if(args.length > 0) {
+            portnum = Integer.parseInt(args[0]);
+        } else {
+            portnum = 2;
+        }
 
-        if(args.length > 0) port = Integer.parseInt(args[0]);
-        else port = 8888;
-
-        GWackChannel server = new GWackChannel(port);
+        GWackChannel server = new GWackChannel(portnum);
         server.serve(-1);
     }
 }

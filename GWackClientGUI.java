@@ -121,8 +121,8 @@ public class GWackClientGUI extends JFrame {
                 nameField.setEditable(true);
                 addressField.setEditable(true);
                 portField.setEditable(true);
-                // messageTextArea.setText(""); Maybe leave in
-                // memberTextArea.setText(""); Maybe leave in
+                messageTextArea.setText(""); 
+                memberTextArea.setText(""); 
             }
         });
 
